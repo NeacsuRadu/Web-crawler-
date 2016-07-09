@@ -2,8 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import operator
+
 file_links = open( 'links.txt', 'w' )
+file_links2 = open( 'links2.txt', 'w' )
 dictionar = { }
+dictionar2 = { }
 def function ( number_of_pages ):
     page_number = 0
     while page_number < number_of_pages:
@@ -23,11 +26,26 @@ def function ( number_of_pages ):
                 value = rating2.string
                 dictionar.update( { href:value[0] } )
             else :
-                dictionar.update( { href:'0'})
+                nume = link.find( 'td', { 'class':'source' } )
+                if nume is not None :
+                    alt_nume = nume.string
+                    dictionar2.update( { href:alt_nume } )
+                    #file_links2.write( href )
+                    #file_links2.write( alt_nume )
+                    #file_links2.write( '\n' )
+                else :
+                    dictionar2.update( {href:"" } )
+                    #file_links2.write( href )
+                    #file_links2.write( '\n' )
         page_number += 1
-
 function( 36 )
 sdict = sorted( dictionar.items(), key = operator.itemgetter(1) )
 for number, letter in sdict:
     file_links.write("\n".join(["%s %s" % (number, letter)]) + "\n")
+valoare = 0
+for k,v in dictionar2.items():
+    print( k, v )
+    valoare += 1
+print( valoare )
+file_links2.close()
 file_links.close()
